@@ -1,0 +1,6 @@
+using image gallery.. https://bootsnipp.com/snippets/E1EZ5
+
+element plus example: https://github.com/ElemeFE/element/issues/6360
+using text editor: https://vueup.github.io/vue-quill/guide/installation.html
+
+laravel passport api authentication: https://www.laravelcode.com/post/laravel-8-multi-authentication-api-with-example

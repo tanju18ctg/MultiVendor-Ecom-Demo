@@ -1,0 +1,2 @@
+we are using vue3-carousel
+package link: https://ismail9k.github.io/vue3-carousel/

@@ -1,0 +1,7 @@
+laravel passport delete revoke/expired tokens..
+https://stackoverflow.com/questions/54549982/in-laravel-is-there-a-way-to-delete-old-revoked-expired-passport-tokens
+
+use Laravel\Passport\Events\RefreshTokenCreated;
+use Laravel\Passport\Events\AccessTokenCreated;
+
+// division and districts seeder inserted from : https://github.com/sandofvega/laravel-bangladesh-geocode
