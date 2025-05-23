@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\ViewException;
+use ReflectionClass;
 use ReflectionProperty;
 use Spatie\Ignition\Contracts\ProvidesSolution;
 use Spatie\LaravelIgnition\Exceptions\ViewException as IgnitionViewException;
@@ -118,15 +119,26 @@ class ViewExceptionMapper
 
     protected function getKnownPaths(): array
     {
-        $lastCompiled = new ReflectionProperty($this->compilerEngine, 'lastCompiled');
-        $lastCompiled->setAccessible(true);
-        $lastCompiled = $lastCompiled->getValue($this->compilerEngine);
+        $compilerEngineReflection = new ReflectionClass($this->compilerEngine);
+
+        if (! $compilerEngineReflection->hasProperty('lastCompiled') && $compilerEngineReflection->hasProperty('engine')) {
+            $compilerEngine = $compilerEngineReflection->getProperty('engine');
+            $compilerEngine->setAccessible(true);
+            $compilerEngine = $compilerEngine->getValue($this->compilerEngine);
+            $lastCompiled = new ReflectionProperty($compilerEngine, 'lastCompiled');
+            $lastCompiled->setAccessible(true);
+            $lastCompiled = $lastCompiled->getValue($compilerEngine);
+        } else {
+            $lastCompiled = $compilerEngineReflection->getProperty('lastCompiled');
+            $lastCompiled->setAccessible(true);
+            $lastCompiled = $lastCompiled->getValue($this->compilerEngine);
+        }
 
         $knownPaths = [];
         foreach ($lastCompiled as $lastCompiledPath) {
             $compiledPath = $this->compilerEngine->getCompiler()->getCompiledPath($lastCompiledPath);
 
-            $knownPaths[$compiledPath ?? $lastCompiledPath] = $lastCompiledPath;
+            $knownPaths[realpath($compiledPath ?? $lastCompiledPath)] = realpath($lastCompiledPath);
         }
 
         return $knownPaths;
